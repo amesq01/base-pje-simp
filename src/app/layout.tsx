@@ -20,10 +20,12 @@ export default function RootLayout({
     
     <html lang="pt-br">
       
-      <body className={inter.className } >
+      <body className={inter.className }  >
+        <div className="bg-slate-100 h-screen">
         <Header/>
         <Nav/>
         {children}
+        </div>
         </body>
     </html>
   );

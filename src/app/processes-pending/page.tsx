@@ -1,39 +1,65 @@
 
 
-export default function ProcessesPending() {
+import { cookies } from "next/headers";
+
+import { FormCreate } from "./form-create";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import supabase from "../config/supabaseClient";
+import React from "react";
+import { set } from "react-hook-form";
+import { revalidatePath } from "next/cache";
+import { FormSearch } from "./form-search";
+
+export default  async function ProcessesPending() {
+
+  const client = createServerComponentClient({cookies: cookies})
+
+  const {data:processes, error} = await supabase
+      .from('processes_')
+      .select('*')
+      console.log(processes);
+
+
+  if (error){
+      console.error('Error fetching watches')
+  }
+
   return (
     <div className="p-4">
-      <p className="text-center my-10">Processos Pendentes de Manifestação</p>
+      <p className="text-center  text-black my-10">Processos Pendentes de Manifestação</p>
+
+      <div className="my-4">
+        <FormSearch rawData={processes} />
+      </div>
 
       <div className="p-4 bg-slate-400 rounded">
       <p className="text-center"> Cadastre o Processo</p>
       
-      <form className="flex flex-col  mt-4 gap-3" action="">     
-       <div className="flex flex-col gap-1">
-        <label htmlFor="receivedAt">Recebido em:</label>
-          <input className="p-2 rounded" type="date" id="receivedAt" name="receivedAt" />
-       </div>
+  
 
-        <div className="flex flex-col gap-1  ">
-          <label htmlFor="simpNumber">SIMP:</label>
-          <input className="p-2 rounded" type="text" id="simpNumber" name="simpNumber" />
-        </div>
-
-       <div className="flex flex-col gap-1 ">
-        <label htmlFor="PJE">PJE:</label>
-        <input className="p-2 rounded" type="text" id="PJE" name="PJE" />
-       </div>
-
-       <button className="flex bg-bgPrimary rounded p-2 hover:bg-bgPrimary/80 justify-center">
-          <p>Cadastrar</p>
-       </button>
-        </form>
+      <FormCreate/>
+      
       </div>
 
-      <div className="mt-5 p-2 flex gap-3 items-center justify-between">
-        <input  type="text" placeholder="Buscar processo" className="p-3 w-full rounded" />
-        <p>Buscar</p>
+      
+
+{
+  processes && processes.map((process:any) => {
+    return(
+      <div key={process.id} className="p-4 bg-slate-400 rounded mt-5">
+        <p className="text-center">Processo</p>
+        <p className="text-center">Recebido em: {process.received_at}</p>
+        <p className="text-center">SIMP: {process.simpnumber}</p>
+        <p className="text-center">PJE: {process.pjenumber}</p>
       </div>
+    )
+  })
+}
+
+{
+  !processes?.length && <p className="text-center text-black">Sem Processos</p>
+}
+
 
     </div>
   );
