@@ -1,40 +1,35 @@
-'use server'
+'use server';
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import supabase from "../config/supabaseClient"
-import { revalidatePath } from "next/cache"
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import supabase from '../config/supabaseClient';
+import { revalidatePath } from 'next/cache';
+import { FieldValues, SubmitHandler } from 'react-hook-form';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
-export const createAction = async (formData:any) => {
-    let simpnumber = formData.simpNumber
-    let pjenumber = formData.pjeNumber
-    let received_at = formData.receivedAt
+export const createAction: SubmitHandler<FieldValues> = async (formData) => {
+
+  const simpnumber = formData.simpNumber;
+  const pjenumber = formData.pjeNumber;
+  const received_at = dayjs(formData.receivedAt).utc();
+  const id = formData?.id;
+  const type = formData?.type || 'pendente';
 
   const { data, error } = await supabase
-      .from('processes_')
-      .insert([
-          {
-            simpnumber,
-            pjenumber,
-            received_at,
-            type: 'pendente'
-          }
-      ])
+    .from('processes_')
+    .upsert(
+      {
+        id,
+        simpnumber,
+        pjenumber,
+        received_at,
+        type
+      }
+    ).eq('id', id);
   if (error) {
-     const {data, error} = await supabase
-     .from('processes_')
-     .update([
-        {
-          
-          received_at,
-        }
-     ]).match({pjenumber: pjenumber}).eq('type', 'manifested')
-
-     alert('Processo já cadastrado')
-    
-      revalidatePath('/processes-pending')
+    console.error(error);
   }
-   revalidatePath('/processes-pending')
-  console.log(data)
-
-  return { message: 'Success' } 
-}
+  revalidatePath('/processes-pending');
+  return { message: 'Success' }; 
+};

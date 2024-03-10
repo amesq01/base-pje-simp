@@ -1,8 +1,12 @@
+interface ButtonCreateProps {
+  title:string
+}
 
-export const ButtonCreate =  () => {
+
+export const ButtonCreate =  ({title}:ButtonCreateProps) => {
   return(
     <button type="submit" className="flex bg-blue-500 rounded p-2 hover:bg-bgPrimary/80 justify-center">
-    <p>Cadastrar</p>
+      <p>{title}</p>
     </button>
-  )
-}
+  );
+};
