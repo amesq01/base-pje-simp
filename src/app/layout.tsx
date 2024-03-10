@@ -21,21 +21,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   
-  
-  const client = createServerComponentClient({cookies: cookies});
-
+  //const client = createServerComponentClient({cookies: cookies});
 
   return (
     
     <html lang="pt-br">
       
       <body className={inter.className }  >
-        <div className="bg-slate-100 h-screen">
+        <div className="bg-slate-100 min-h-screen">
           <Header/>
           <Nav/>
           {children}
-         
-
         </div>
       </body>
     </html>

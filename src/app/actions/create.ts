@@ -1,6 +1,6 @@
 'use server';
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+//import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import supabase from '../config/supabaseClient';
 import { revalidatePath } from 'next/cache';
 import { FieldValues, SubmitHandler } from 'react-hook-form';

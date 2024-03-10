@@ -3,12 +3,12 @@
 import { useForm } from 'react-hook-form';
 import { ButtonCreate } from './button-create';
 import { createAction } from '../actions/create';
-import { revalidatePath } from 'next/cache';
+//import { revalidatePath } from 'next/cache';
 import dayjs from 'dayjs';
 
 interface rawDateProps {
   process?: IProcess
-  onUpdate?: () => void
+  onUpdate: () => void
 }
 
 export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
@@ -23,12 +23,9 @@ export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
 
   const handleAction = async (data:any) => {
     await createAction(data);
-    console.log(data);
     reset();
-    //onUpdate();
-    
+    onUpdate();
   };
-
 
   return (
     <form className="flex flex-col  mt-4 gap-3" onSubmit={handleSubmit(handleAction)}>
@@ -50,7 +47,15 @@ export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
         <input  placeholder="pje" className="p-2 rounded text-black" type="text" {...register('pjeNumber')} />
       </div>
 
-      <ButtonCreate title='Receber' />
+      <div className="flex justify-between items-center gap-2">
+        <ButtonCreate title='Receber' />
+        <button 
+          className='border border-black p-2 rounded'
+          onClick={onUpdate}
+        >
+          Cancelar
+        </button>
+      </div>
     </form>
   );
 };

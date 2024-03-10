@@ -16,19 +16,22 @@ export default function ProcessesPending({rawData}:rawDateProps) {
 
   const [isProcessCreated, setIsProcessCreated] = useState<'initial'|'not-found'| 'found'>();
   const [searchedValue, setSearchedValue] = useState<IProcess>();
-  
+  const [inputValue, setInputValue] = useState<string>('');
 
   async function searchAndFilter (e:FormEvent<HTMLFormElement>
   )  {
     e.preventDefault();
-    
+
     const {searchAndFilterInput} = Object.fromEntries(new FormData(e.currentTarget));
+    console.log(searchAndFilterInput,'searchAndFilterInput');
         
     const findProcess = rawData
       .find((process) => process.pjenumber === searchAndFilterInput);
     setIsProcessCreated(findProcess ? 'found' : 'not-found');
+    if(!findProcess){
+      setInputValue(searchAndFilterInput.toString());
+    }
     setSearchedValue(findProcess);
-    
     e.currentTarget.reset();
   }
   return (
@@ -55,9 +58,12 @@ export default function ProcessesPending({rawData}:rawDateProps) {
       {
         isProcessCreated==='not-found' && <div className="p-4 bg-slate-400 rounded">
           <p className="text-center">Cadastre o Processo</p>
-          <FormCreate process={searchedValue} onUpdate={()=>{
-            setIsProcessCreated('initial');
-          }} />
+          <FormCreate 
+            inputValue={inputValue}
+            process={searchedValue}
+            onUpdate={()=>{
+              setIsProcessCreated('initial');
+            }} />
           
         </div>
       }
@@ -65,9 +71,11 @@ export default function ProcessesPending({rawData}:rawDateProps) {
       {
         isProcessCreated==='found' && <div className="p-4 bg-green-400 rounded">
           <p className="text-center">Receber processo</p>
-          <FormUpdate process={searchedValue} onUpdate={()=>{
-            setIsProcessCreated('initial');
-          }} />
+          <FormUpdate 
+            process={searchedValue} 
+            onUpdate={()=>{
+              setIsProcessCreated('initial');
+            }} />
         </div>
       }
  

@@ -1,20 +1,13 @@
 
 import { createAction } from '@/app/actions/create';
-import supabase from '@/app/config/supabaseClient';
 import dayjs from 'dayjs';
-import { revalidatePath } from 'next/cache';
-
-
 
 interface rawDateProps {
   processes?: IProcess[]
-  
 }
 
 export function RenderItens({processes}:rawDateProps){
-  console.log(processes);
   const filteredProcesses = processes?.filter((process) => { return process.type === 'pendente';});
-  console.log(filteredProcesses);
 
   return(
     <>
