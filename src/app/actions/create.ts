@@ -14,7 +14,7 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
   const pjenumber = formData.pjeNumber;
   const received_at = dayjs(formData.receivedAt).utc();
   const id = formData?.id;
-  const type = formData?.type || 'pendente';
+  const type = formData?.type || 'pending';
 
   const { data, error } = await supabase
     .from('processes_')

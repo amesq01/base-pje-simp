@@ -6,6 +6,9 @@ import { Nav } from '@/components/nav';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import supabase from './config/supabaseClient';
 import { cookies } from 'next/headers';
+import { ProcessesProvider } from '@/context/processes';
+
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,16 +26,20 @@ export default async function RootLayout({
   
   //const client = createServerComponentClient({cookies: cookies});
 
+  
   return (
+
     
     <html lang="pt-br">
       
       <body className={inter.className }  >
-        <div className="bg-slate-100 min-h-screen">
-          <Header/>
-          <Nav/>
-          {children}
-        </div>
+        <ProcessesProvider>
+          <div className="bg-slate-100 min-h-screen">
+            <Header/>
+            <Nav/>
+            {children}
+          </div>
+        </ProcessesProvider>
       </body>
     </html>
   );

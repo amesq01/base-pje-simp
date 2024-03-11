@@ -23,10 +23,17 @@ export default function ProcessesPending({rawData}:rawDateProps) {
     e.preventDefault();
 
     const {searchAndFilterInput} = Object.fromEntries(new FormData(e.currentTarget));
-    console.log(searchAndFilterInput,'searchAndFilterInput');
-        
+
     const findProcess = rawData
       .find((process) => process.pjenumber === searchAndFilterInput);
+    if(findProcess?.type==='pending'){
+      alert('Processo já cadastrado e encontra-se na lista de pendentes');
+      return;
+    }
+    else if(findProcess?.type==='manifested'){
+      alert('Processo já cadastrado e encontra-se na lista de manifestados');
+      return;
+    }
     setIsProcessCreated(findProcess ? 'found' : 'not-found');
     if(!findProcess){
       setInputValue(searchAndFilterInput.toString());
@@ -34,11 +41,14 @@ export default function ProcessesPending({rawData}:rawDateProps) {
     setSearchedValue(findProcess);
     e.currentTarget.reset();
   }
+
+  const filteredProcesses = rawData?.filter((process) => { return process.type === 'pending';}).length;
+
   return (
     <div className="p-4">
       <p 
         className="text-center  text-black my-10">
-        Processos Pendentes de Manifestação
+        ({filteredProcesses}) - Processos Pendentes de Manifestação
       </p>
       <div className="my-4">
         <form onSubmit={searchAndFilter} className='flex gap-2'>
@@ -63,7 +73,9 @@ export default function ProcessesPending({rawData}:rawDateProps) {
             process={searchedValue}
             onUpdate={()=>{
               setIsProcessCreated('initial');
-            }} />
+              
+            }}
+          />
           
         </div>
       }
@@ -81,7 +93,7 @@ export default function ProcessesPending({rawData}:rawDateProps) {
  
       <div className="flex flex-col gap-2 mt-4
       ">
-        <RenderItens processes={rawData}/>
+        <RenderItens processes={rawData} page='pending' goTo='manifested'/>
       </div>
     </div>
   );

@@ -1,16 +1,15 @@
 
+
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import ProcessesPending from './processes-pending/page';
 import { cookies } from 'next/headers';
 import supabase from './config/supabaseClient';
 
 interface rawDateProps {
-  processes?: IProcess[]
-
+  exampleProp: string
 }
 
-export default async function Home() {
-
+export default async function Home({exampleProp}:rawDateProps) {
 
   const client = createServerComponentClient({cookies: cookies});
 
@@ -22,7 +21,6 @@ export default async function Home() {
   if (error){
     console.error('Error fetching watches');
   }
-
   return (
     <>
       <ProcessesPending rawData={processes || []}/>
