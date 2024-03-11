@@ -28,13 +28,13 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
       {
         filteredProcesses && filteredProcesses.map((process:IProcess) => {
           return(
-            <div key={process.id} className="p-1 px-2 bg-slate-300 rounded text-sm flex justify-between items-center gap-2"> 
+            <div key={process.id} className="p-1 px-2 bg-slate-300 rounded text-xs flex justify-between items-center gap-2"> 
               <div className='flex flex-col w-fit text-end text-slate-900 gap-1'>
                 <p>Recebido em:</p>
                 <p>SIMP:</p>
                 <p>PJE:</p>
               </div>
-              <div className='flex flex-col flex-1 text-start  gap-1 text-slate-700'>
+              <div className='flex flex-col flex-1 text-start text-xs gap-1 text-slate-700'>
                 <p className="">{dayjs(process?.received_at).format('DD/MM/YYYY')}</p>
                 <p className=""> {formatarSIMP(process.simpnumber)}</p>
                 <p className=""> {formatarPJE(process.pjenumber)}</p>
@@ -45,7 +45,7 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
                 page !== 'archived' && 
 
               <button 
-                className=" bg-green-600 px-2 h-9  rounded text-white text-xs"
+                className=" bg-green-600 px-1 h-9  rounded text-white text-[10px]"
                 onClick={async () => createAction({...process, type:goTo})}
               >
                 {page === 'pending' ? 'Protocolar' : 'Arquivar'}
