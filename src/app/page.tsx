@@ -5,11 +5,9 @@ import ProcessesPending from './processes-pending/page';
 import { cookies } from 'next/headers';
 import supabase from './config/supabaseClient';
 
-interface rawDateProps {
-  exampleProp: string
-}
 
-export default async function Home({exampleProp}:rawDateProps) {
+
+export default async function Home() {
 
   const client = createServerComponentClient({cookies: cookies});
 
