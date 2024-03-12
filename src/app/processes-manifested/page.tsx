@@ -4,7 +4,7 @@ import supabase from '../config/supabaseClient';
 
 
 
-export const getManifestedProcesses = async (type:string) => {
+const getManifestedProcesses = async () => {
   const { data, error } = await supabase
     .from('processes_')
     .select('*')
@@ -19,7 +19,7 @@ export const getManifestedProcesses = async (type:string) => {
 
 export default  async function ProcessesManifested() {
 
-  const data:any = await getManifestedProcesses('manifested');
+  const data:any = await getManifestedProcesses();
   
   return (
     <div className="p-4">
