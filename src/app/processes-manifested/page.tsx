@@ -1,5 +1,5 @@
 'use client';
-//import { RenderItens } from '@/components/render-itens';
+import { RenderItens } from '@/components/render-itens';
 import supabase from '../config/supabaseClient';
 
 
@@ -15,8 +15,6 @@ const getManifestedProcesses = async () => {
   return data;
 };
 
-
-
 export default  async function ProcessesManifested() {
 
   const data:any = await getManifestedProcesses();
@@ -26,7 +24,7 @@ export default  async function ProcessesManifested() {
       <p className="text-center my-10 text-black">Processos com Manifestação</p>
 
       <div className=' flex flex-col gap-1'>
-        
+        <RenderItens processes={data} page='manifested' goTo='archived' />  
       </div>
 
     </div>
