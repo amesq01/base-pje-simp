@@ -3,7 +3,7 @@ import { createAction } from '@/app/actions/create';
 import dayjs from 'dayjs';
 
 interface rawDateProps {
-  processes?: IProcess[]
+  processes: IProcess[] 
   page: 'pending' | 'manifested' | 'archived'
   goTo?: string
 }
