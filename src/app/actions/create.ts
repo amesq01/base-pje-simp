@@ -13,7 +13,7 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
 
   const simpnumber = formData.simpNumber;
   const pjenumber = formData.pjeNumber;
-  const received_at = formData.receivedAt;
+  const received_at = dayjs(formData.receivedAt).utc();
   const id = formData?.id;
   const type = formData?.type || 'pending';
 
