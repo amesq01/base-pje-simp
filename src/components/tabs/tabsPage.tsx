@@ -20,7 +20,7 @@ export const TabsComponent = ({processes}:rawDateProps) => {
 
 
   return(
-    <Tabs defaultValue="pending" className=" flex flex-col w-full max-w-[500px] m-auto  p-0">
+    <Tabs defaultValue="pending" className=" flex flex-col w-full max-w-[500px] m-auto  p-0 bg-slate-100">
       <TabsList className="w-full p-0 bg-transparent rounded-none flex gap-[1px]" >
         <TabsTrigger
           className='flex  flex-1 justify-center items-center' 

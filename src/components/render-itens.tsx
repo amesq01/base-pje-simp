@@ -2,6 +2,8 @@
 
 import { createAction } from '@/app/actions/create';
 import dayjs from 'dayjs';
+import { ptBR } from 'date-fns/locale/pt-BR';
+import { format } from 'date-fns';
 
 interface rawDateProps {
   processes: IProcess[] 
@@ -36,7 +38,7 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
                 <p>PJE:</p>
               </div>
               <div className='flex flex-col flex-1 text-start text-xs gap-1 text-slate-700'>
-                <p className="">{dayjs(process?.received_at).format('DD/MM/YYYY')}</p>
+                <p className="">{format(process.received_at, 'P \'às\' p', {locale:ptBR})}</p>
                 <p className=""> {formatarSIMP(process.simpnumber)}</p>
                 <p className=""> {formatarPJE(process.pjenumber)}</p>
               </div>
