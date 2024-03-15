@@ -4,6 +4,8 @@ import { createAction } from '@/app/actions/create';
 import dayjs from 'dayjs';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { format } from 'date-fns';
+import { useToast } from '@/components/ui/use-toast';
+
 
 interface rawDateProps {
   processes: IProcess[] 
@@ -26,6 +28,17 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
     return numeroFormatado;
   }
 
+  const {toast } = useToast();
+
+
+  function clipBoard(item: string){
+    navigator.clipboard.writeText(item);
+    toast({variant: 'destructive',
+      title: 'Copiado',
+      description: 'Número copiado para a área de transferência',
+      type: 'foreground',
+    });
+  }
   return(
     <>
       {
@@ -39,8 +52,9 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
               </div>
               <div className='flex flex-col flex-1 text-start text-xs gap-1 text-slate-700'>
                 <p className="">{format(process.received_at, 'P \'às\' p', {locale:ptBR})}</p>
-                <p className=""> {formatarSIMP(process.simpnumber)}</p>
-                <p className=""> {formatarPJE(process.pjenumber)}</p>
+                <p  > {formatarSIMP(process.simpnumber)}</p>
+               
+                <p className="cursor-pointer" onClick={()=>clipBoard(process.pjenumber)}> {formatarPJE(process.pjenumber)}</p>
               </div>
 
             

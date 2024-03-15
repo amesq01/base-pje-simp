@@ -33,7 +33,7 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
   //const router = useRouter();
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
-      receivedAt: date,
+      receivedAt: dayjs(new Date).format('YYYY-MM-DD'),
       simpNumber: '',
       pjeNumber: inputValue
     }
@@ -51,7 +51,7 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
 
   return (
     <form className="flex flex-col  mt-4 gap-3" onSubmit={handleSubmit(handleAction)}>
-      <div className="flex flex-col gap-1">
+      {/* <div className="flex flex-col gap-1">
         <label htmlFor="receivedAt">Recebido em:</label>
         <Popover>
           <PopoverTrigger asChild>
@@ -76,6 +76,10 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
             />
           </PopoverContent>
         </Popover>
+      </div> */}
+      <div className="flex flex-col gap-1">
+        <label htmlFor="receivedAt">Recebido em:</label>
+        <input required className="p-2 rounded text-black" type="date" {...register('receivedAt')} />
       </div>
 
       <div className="flex flex-col gap-1  ">
