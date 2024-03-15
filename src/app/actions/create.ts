@@ -16,7 +16,7 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
   const id = formData?.id;
   const type = formData?.type || 'pending';
 
-  const { data, error } = await supabase
+  const {  error } = await supabase
     .from('processes_')
     .upsert(
       {
@@ -30,6 +30,7 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
   if (error) {
     console.error(error);
   }
-  revalidatePath('/processes-pending');
+  
+  revalidatePath('/');
   return { message: 'Success' }; 
 };

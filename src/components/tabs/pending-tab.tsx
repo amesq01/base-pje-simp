@@ -1,30 +1,31 @@
-'use client';
-//import { cookies } from 'next/headers';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { FormCreate } from './form-create';
-//import { ButtonSearch } from './button-search';
-import { RenderItens } from '@/components/render-itens';
-//import { Filter } from '../actions/filter';
+
+import { TabsContent } from '@/components/ui/tabs';
 import { FormEvent, useState } from 'react';
-import { FormUpdate } from './form-update';
+
+import { FormUpdate } from '../form-update';
+import { RenderItens } from '../render-itens';
+import { FormCreate } from '../form-create';
+
 
 interface rawDateProps {
-  rawData: IProcess[]
+  processes: IProcess[]
 }
 
-export default function ProcessesPending({rawData}:rawDateProps) {
+
+
+export const PendingTab = ({processes}:rawDateProps) => {
 
   const [isProcessCreated, setIsProcessCreated] = useState<'initial'|'not-found'| 'found'>();
   const [searchedValue, setSearchedValue] = useState<IProcess>();
   const [inputValue, setInputValue] = useState<string>('');
 
-  async function searchAndFilter (e:FormEvent<HTMLFormElement>
+  function searchAndFilter (e:FormEvent<HTMLFormElement>
   )  {
     e.preventDefault();
 
     const {searchAndFilterInput} = Object.fromEntries(new FormData(e.currentTarget));
 
-    const findProcess = rawData
+    const findProcess = processes
       .find((process) => process.pjenumber === searchAndFilterInput);
     if(findProcess?.type==='pending'){
       alert('Processo já cadastrado e encontra-se na lista de pendentes');
@@ -42,14 +43,13 @@ export default function ProcessesPending({rawData}:rawDateProps) {
     e.currentTarget.reset();
   }
 
-  const filteredProcesses = rawData?.filter((process) => { return process.type === 'pending';}).length;
 
   return (
-    <div className="p-4">
-      <p 
-        className="text-center  text-black my-10">
-        ({filteredProcesses}) - Processos Pendentes de Manifestação
-      </p>
+    <TabsContent value="pending" className='bg-slate-50/70  p-0 mt-[1px] px-2 mb-2'>
+      <div className='flex justify-center items-center py-10'>
+        <p>Processos Pendentes de Manifestação </p>
+      </div>
+
       <div className="my-4">
         <form onSubmit={searchAndFilter} className='flex gap-2'>
           <input 
@@ -57,10 +57,10 @@ export default function ProcessesPending({rawData}:rawDateProps) {
             type="text" 
             name="searchAndFilterInput" 
             placeholder="Buscar processo" 
-            className="p-3 w-full rounded text-black" 
+            className="p-3 w-full rounded text-black border" 
           />
-          <button type="submit" className="flex bg-blue-500 rounded p-2 hover:bg-bgPrimary/80 justify-center">
-            <p>Buscar</p>
+          <button type="submit" className="flex bg-blue-500 rounded px-4 hover:bg-bgPrimary/80 justify-center items-center">
+            <p className='text-md text-white'>Buscar</p>
           </button>
         </form>
       </div>
@@ -93,8 +93,10 @@ export default function ProcessesPending({rawData}:rawDateProps) {
  
       <div className="flex flex-col gap-2 mt-4
       ">
-        <RenderItens processes={rawData} page='pending' goTo='manifested'/>
+        <RenderItens processes={processes} page='pending' goTo='manifested'/>
       </div>
-    </div>
+
+      
+    </TabsContent>
   );
-}
+};

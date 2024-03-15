@@ -1,7 +1,7 @@
 
 export const Header = () => {
   return(
-    <header className="bg-blue-500 p-4 flex justify-between items-center">
+    <header className="bg-blue-500 p-4 flex justify-between items-center w-full max-w-[500px] m-auto">
       <div className="flex text-3xl">
         <p className="text-[#f2923d]">PJE</p>
         <p className="text-white">SIMP</p>

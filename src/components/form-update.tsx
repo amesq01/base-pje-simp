@@ -1,26 +1,28 @@
 'use client';
 
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { ButtonCreate } from './button-create';
-import { createAction } from '../actions/create';
+import { createAction } from '../app/actions/create';
 //import { revalidatePath } from 'next/cache';
 import dayjs from 'dayjs';
 
 interface rawDateProps {
   process?: IProcess
   onUpdate: () => void
-  inputValue?: string
 }
-export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+
+export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
-      receivedAt: dayjs(new Date).format('YYYY-MM-DD'),
-      simpNumber: '',
-      pjeNumber: inputValue
+      id: process?.id,
+      receivedAt: dayjs(process?.received_at).format('YYYY-MM-DD'),
+      simpNumber: process?.simpnumber,
+      pjeNumber: process?.pjenumber
     }
   });
 
-  const handleAction:SubmitHandler<FieldValues> = async (data) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleAction = async (data:any) => {
     await createAction(data);
     reset();
     onUpdate();
@@ -30,29 +32,32 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
     <form className="flex flex-col  mt-4 gap-3" onSubmit={handleSubmit(handleAction)}>
       <div className="flex flex-col gap-1">
         <label htmlFor="receivedAt">Recebido em:</label>
-        <input required className="p-2 rounded text-black" type="date" {...register('receivedAt')} />
+        <input 
+          {...register('receivedAt')} 
+          className="p-2 rounded text-black" 
+          type="date" 
+        />
       </div>
 
       <div className="flex flex-col gap-1  ">
         <label htmlFor="simpNumber">SIMP:</label>
-        <input required placeholder="simp" className="p-2 rounded text-black" type="text" {...register('simpNumber')}  />
+        <input placeholder="simp" className="p-2 rounded text-black" type="text" {...register('simpNumber')}  />
       </div>
 
       <div className="flex flex-col gap-1 ">
         <label htmlFor="PJE">PJE:</label>
-        <input required placeholder="pje" className="p-2 rounded text-black" type="text" {...register('pjeNumber')} />
+        <input  placeholder="pje" className="p-2 rounded text-black" type="text" {...register('pjeNumber')} />
       </div>
 
       <div className="flex justify-between items-center gap-2">
-        <ButtonCreate title='Cadastrar' />
+        <ButtonCreate title='Receber' />
         <button 
           className='border border-black p-2 rounded'
           onClick={onUpdate}
         >
           Cancelar
         </button>
-
-      </div>    
+      </div>
     </form>
   );
 };
