@@ -41,7 +41,6 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
 
   
   const handleAction:SubmitHandler<FieldValues> = async (data) => {
-    console.log('data', data);
     await createAction(data);
     reset();
     onUpdate();
