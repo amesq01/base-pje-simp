@@ -43,11 +43,10 @@ export const PendingTab = ({processes}:rawDateProps) => {
     e.currentTarget.reset();
   }
 
-
   return (
     <TabsContent value="pending" className='bg-slate-50/70  p-0 mt-[1px] px-2 mb-2'>
       <div className='flex justify-center items-center py-10'>
-        <p>Processos Pendentes de Manifestação </p>
+        <p>Processos Pendentes de Manifestação! </p>
       </div>
 
       <div className="my-4">
