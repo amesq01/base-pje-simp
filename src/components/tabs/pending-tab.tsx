@@ -29,10 +29,12 @@ export const PendingTab = ({processes}:rawDateProps) => {
       .find((process) => process.pjenumber === searchAndFilterInput);
     if(findProcess?.type==='pending'){
       alert('Processo já cadastrado e encontra-se na lista de pendentes');
+      e.currentTarget.reset();
       return;
     }
     else if(findProcess?.type==='manifested'){
       alert('Processo já cadastrado e encontra-se na lista de manifestados');
+      e.currentTarget.reset();
       return;
     }
     setIsProcessCreated(findProcess ? 'found' : 'not-found');
