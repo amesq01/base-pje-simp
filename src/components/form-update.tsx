@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { ButtonCreate } from './button-create';
 import { createAction } from '../app/actions/create';
+import { useRouter } from 'next/navigation';
 //import { revalidatePath } from 'next/cache';
 import dayjs from 'dayjs';
 
@@ -20,12 +21,14 @@ export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
       pjeNumber: process?.pjenumber
     }
   });
+  const router = useRouter();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAction = async (data:any) => {
     await createAction(data);
     reset();
     onUpdate();
+    router.refresh();
   };
 
   return (

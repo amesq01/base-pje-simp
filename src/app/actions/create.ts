@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache';
 import { FieldValues, SubmitHandler } from 'react-hook-form';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { toast } from '@/components/ui/use-toast';
 dayjs.extend(utc);
 
 export const createAction: SubmitHandler<FieldValues> = async (formData) => {
@@ -30,9 +29,12 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
     ).eq('id', id);
   if (error) {
     console.error(error);
+    return { message: 'Error', error };
   }
 
-
+  // Revalidar a página e todas as rotas relacionadas
+  revalidatePath('/', 'page');
   revalidatePath('/');
+  
   return { message: 'Success' }; 
 };

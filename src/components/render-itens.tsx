@@ -1,10 +1,12 @@
 
+'use client';
 
 import { createAction } from '@/app/actions/create';
 import dayjs from 'dayjs';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 
 interface rawDateProps {
@@ -29,7 +31,7 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
   }
 
   const {toast } = useToast();
-
+  const router = useRouter();
 
   function clipBoard(item: string){
     navigator.clipboard.writeText(item);
@@ -63,7 +65,16 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
 
               <button 
                 className=" bg-green-600 px-1 h-9  rounded text-white text-[10px]"
-                onClick={async () => createAction({...process, type:goTo})}
+                onClick={async () => {
+                  await createAction({
+                    id: process.id,
+                    pjeNumber: process.pjenumber,
+                    simpNumber: process.simpnumber,
+                    receivedAt: process.received_at,
+                    type: goTo || 'pending'
+                  });
+                  router.refresh();
+                }}
               >
                 {page === 'pending' ? 'Protocolar' : 'Arquivar'}
               </button>

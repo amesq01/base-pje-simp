@@ -3,6 +3,7 @@
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { ButtonCreate } from './button-create';
 import { createAction } from '../app/actions/create';
+import { useRouter } from 'next/navigation';
 //import { revalidatePath } from 'next/cache';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -27,10 +28,9 @@ interface rawDateProps {
 export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
 
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const router = useRouter();
 
   console.log('date', date);
-
-  //const router = useRouter();
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       receivedAt: dayjs(new Date).format('YYYY-MM-DD'),
@@ -44,8 +44,7 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
     await createAction(data);
     reset();
     onUpdate();
-    
-    
+    router.refresh();
   };
 
   return (
