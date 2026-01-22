@@ -29,15 +29,48 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
 
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const router = useRouter();
+  
+  // Formatar data/hora atual para o formato datetime-local usando Date nativo
+  // para garantir que use o timezone local correto
+  const getCurrentDateTimeLocal = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+  
+  // Usar useState para garantir que seja calculado no cliente
+  const [currentDateTime, setCurrentDateTime] = React.useState<string>(() => getCurrentDateTimeLocal());
+
+  React.useEffect(() => {
+    // Atualizar quando o componente montar no cliente
+    const localDateTime = getCurrentDateTimeLocal();
+    console.log('Hora atual do sistema:', new Date().toString());
+    console.log('Hora formatada para input:', localDateTime);
+    setCurrentDateTime(localDateTime);
+  }, []);
 
   console.log('date', date);
+  console.log('currentDateTime', currentDateTime);
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
-      receivedAt: dayjs(new Date).format('YYYY-MM-DD'),
+      receivedAt: currentDateTime,
       simpNumber: '',
       pjeNumber: inputValue
     }
   });
+
+  // Atualizar o valor do formulário quando currentDateTime mudar
+  React.useEffect(() => {
+    reset({
+      receivedAt: currentDateTime,
+      simpNumber: '',
+      pjeNumber: inputValue
+    });
+  }, [currentDateTime, inputValue, reset]);
 
   
   const handleAction:SubmitHandler<FieldValues> = async (data) => {
@@ -77,7 +110,13 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
       </div> */}
       <div className="flex flex-col gap-1">
         <label htmlFor="receivedAt">Recebido em:</label>
-        <input required className="p-2 rounded text-black" type="date" {...register('receivedAt')} />
+        <input 
+          required 
+          className="p-2 rounded text-black" 
+          type="datetime-local" 
+          defaultValue={getCurrentDateTimeLocal()}
+          {...register('receivedAt')} 
+        />
       </div>
 
       <div className="flex flex-col gap-1  ">

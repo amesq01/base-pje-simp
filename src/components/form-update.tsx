@@ -5,6 +5,7 @@ import { ButtonCreate } from './button-create';
 import { createAction } from '../app/actions/create';
 import { useRouter } from 'next/navigation';
 //import { revalidatePath } from 'next/cache';
+import React from 'react';
 import dayjs from 'dayjs';
 
 interface rawDateProps {
@@ -13,10 +14,35 @@ interface rawDateProps {
 }
 
 export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
+  // Função para obter data/hora local atual
+  const getCurrentDateTimeLocal = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+  
+  // Usar useState para garantir que seja calculado no cliente
+  const [defaultDateTime, setDefaultDateTime] = React.useState<string>(() => {
+    return process?.received_at 
+      ? dayjs(process.received_at).format('YYYY-MM-DDTHH:mm')
+      : getCurrentDateTimeLocal();
+  });
+
+  React.useEffect(() => {
+    // Se não houver processo, atualizar com a hora atual quando montar no cliente
+    if (!process?.received_at) {
+      setDefaultDateTime(getCurrentDateTimeLocal());
+    }
+  }, [process?.received_at]);
+    
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       id: process?.id,
-      receivedAt: dayjs(process?.received_at).format('YYYY-MM-DD'),
+      receivedAt: defaultDateTime,
       simpNumber: process?.simpnumber,
       pjeNumber: process?.pjenumber
     }
@@ -38,7 +64,9 @@ export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
         <input 
           {...register('receivedAt')} 
           className="p-2 rounded text-black" 
-          type="date" 
+          type="datetime-local"
+          key={defaultDateTime}
+          defaultValue={defaultDateTime}
         />
       </div>
 

@@ -12,7 +12,8 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
 
   const simpnumber = formData.simpNumber;
   const pjenumber = formData.pjeNumber;
-  const received_at = dayjs(formData.receivedAt).utc();
+  // Interpreta a data/hora como local e converte para UTC mantendo o mesmo momento
+  const received_at = dayjs(formData.receivedAt).utc().toISOString();
   const id = formData?.id;
   const type = formData?.type || 'pending';
 
