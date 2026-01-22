@@ -4,7 +4,7 @@
 import { createAction } from '@/app/actions/create';
 import dayjs from 'dayjs';
 import { ptBR } from 'date-fns/locale/pt-BR';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -53,7 +53,7 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
                 <p>PJE:</p>
               </div>
               <div className='flex flex-col flex-1 text-start text-xs gap-1 text-slate-700'>
-                <p className="">{format(parseISO(process.received_at), 'P \'às\' p', {locale:ptBR})}</p>
+                <p className="">{format(new Date(process.received_at), 'P \'às\' p', {locale:ptBR})}</p>
                 <p  > {formatarSIMP(process.simpnumber)}</p>
                
                 <p className="cursor-pointer" onClick={()=>clipBoard(process.pjenumber)}> {formatarPJE(process.pjenumber)}</p>

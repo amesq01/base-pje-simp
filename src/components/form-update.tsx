@@ -25,19 +25,13 @@ export const FormUpdate = ({process, onUpdate}: rawDateProps) => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
   
-  // Usar useState para garantir que seja calculado no cliente
-  const [defaultDateTime, setDefaultDateTime] = React.useState<string>(() => {
-    return process?.received_at 
-      ? dayjs(process.received_at).format('YYYY-MM-DDTHH:mm')
-      : getCurrentDateTimeLocal();
-  });
+  // Sempre usar data/hora atual ao receber um processo
+  const [defaultDateTime, setDefaultDateTime] = React.useState<string>(getCurrentDateTimeLocal());
 
   React.useEffect(() => {
-    // Se não houver processo, atualizar com a hora atual quando montar no cliente
-    if (!process?.received_at) {
-      setDefaultDateTime(getCurrentDateTimeLocal());
-    }
-  }, [process?.received_at]);
+    // Sempre atualizar com a hora atual quando o componente montar
+    setDefaultDateTime(getCurrentDateTimeLocal());
+  }, []);
     
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
