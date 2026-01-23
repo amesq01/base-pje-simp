@@ -14,12 +14,13 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
 
   const simpnumber = formData.simpNumber;
   const pjenumber = formData.pjeNumber;
-  // O input datetime-local retorna "YYYY-MM-DDTHH:mm" sem timezone
-  // Precisamos interpretar como hora LOCAL e converter para UTC
-  // dayjs() sem especificar timezone interpreta como local, mas precisamos garantir isso
-  // Criando um objeto Date local e depois convertendo para UTC
+  // O input datetime-local retorna "YYYY-MM-DDTHH:mm" sem timezone (hora local)
+  // Precisamos adicionar 3 horas para converter de UTC-3 (horário local) para UTC
+  // Criar um objeto Date local e adicionar 3 horas antes de converter para UTC
   const localDate = new Date(formData.receivedAt);
-  const received_at = dayjs(localDate).utc().toISOString();
+  // Adicionar 3 horas (3 * 60 * 60 * 1000 milissegundos) para converter de UTC-3 para UTC
+  const utcDate = new Date(localDate.getTime() + (3 * 60 * 60 * 1000));
+  const received_at = dayjs(utcDate).utc().toISOString();
   const id = formData?.id;
   const type = formData?.type || 'pending';
   
