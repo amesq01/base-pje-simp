@@ -6,14 +6,20 @@ import { revalidatePath } from 'next/cache';
 import { FieldValues, SubmitHandler } from 'react-hook-form';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const createAction: SubmitHandler<FieldValues> = async (formData) => {
 
   const simpnumber = formData.simpNumber;
   const pjenumber = formData.pjeNumber;
-  // Interpreta a data/hora como local e converte para UTC mantendo o mesmo momento
-  const received_at = dayjs(formData.receivedAt).utc().toISOString();
+  // O input datetime-local retorna "YYYY-MM-DDTHH:mm" sem timezone
+  // Precisamos interpretar como hora LOCAL e converter para UTC
+  // dayjs() sem especificar timezone interpreta como local, mas precisamos garantir isso
+  // Criando um objeto Date local e depois convertendo para UTC
+  const localDate = new Date(formData.receivedAt);
+  const received_at = dayjs(localDate).utc().toISOString();
   const id = formData?.id;
   const type = formData?.type || 'pending';
   

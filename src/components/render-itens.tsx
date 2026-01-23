@@ -3,10 +3,13 @@
 
 import { createAction } from '@/app/actions/create';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+
+dayjs.extend(utc);
 
 
 interface rawDateProps {
@@ -51,18 +54,14 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
     });
   }
   
-  // Função para formatar data corretamente do UTC para timezone local
+  // Função para formatar data - converter de UTC para timezone local (UTC-3)
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return '-';
-    // Garantir que a string está em formato ISO com timezone
-    // Se não tiver 'Z' no final, adicionar para indicar UTC
-    let isoString = dateString;
-    if (!isoString.endsWith('Z') && !isoString.includes('+') && !isoString.includes('-', 10)) {
-      isoString = isoString + 'Z';
-    }
-    // Cria um objeto Date a partir da string ISO (que está em UTC)
-    // e formata no timezone local
-    const date = new Date(isoString);
+    
+    // A data vem do servidor em UTC (formato ISO com 'Z' no final)
+    // new Date() interpreta strings ISO com 'Z' como UTC e converte automaticamente
+    // para o timezone local do navegador (que é UTC-3 no seu caso)
+    const date = new Date(dateString);
     return format(date, 'P \'às\' p', {locale:ptBR});
   };
   
