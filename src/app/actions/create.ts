@@ -16,18 +16,30 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
   const received_at = dayjs(formData.receivedAt).utc().toISOString();
   const id = formData?.id;
   const type = formData?.type || 'pending';
+  
+  // Preparar objeto de atualização
+  const updateData: any = {
+    id,
+    simpnumber,
+    pjenumber,
+    received_at,
+    type
+  };
+  
+  // Se está mudando para 'manifested', salvar a data de manifestação
+  if (type === 'manifested') {
+    updateData.manifested_at = dayjs().utc().toISOString();
+  }
+  
+  // Se está mudando para 'archived', salvar a data de arquivamento
+  if (type === 'archived') {
+    updateData.archived_at = dayjs().utc().toISOString();
+  }
 
   const {  error } = await supabase
     .from('processes_')
-    .upsert(
-      {
-        id,
-        simpnumber,
-        pjenumber,
-        received_at,
-        type
-      }
-    ).eq('id', id);
+    .upsert(updateData)
+    .eq('id', id);
   if (error) {
     console.error(error);
     return { message: 'Error', error };

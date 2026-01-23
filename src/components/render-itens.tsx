@@ -16,7 +16,16 @@ interface rawDateProps {
 }
 
 export function RenderItens({processes, page, goTo}:rawDateProps){
-  const filteredProcesses = processes?.filter((process) => { return process.type === page;});
+  let filteredProcesses = processes?.filter((process) => { return process.type === page;});
+  
+  // Ordenar arquivados por data de arquivamento (mais recentes primeiro)
+  if (page === 'archived') {
+    filteredProcesses = filteredProcesses?.sort((a, b) => {
+      const dateA = a.archived_at ? new Date(a.archived_at).getTime() : 0;
+      const dateB = b.archived_at ? new Date(b.archived_at).getTime() : 0;
+      return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+    });
+  }
 
   function formatarSIMP(numero: string) {
     const apenasDigitos = numero.replace(/\D/g, '');
@@ -41,22 +50,77 @@ export function RenderItens({processes, page, goTo}:rawDateProps){
       type: 'foreground',
     });
   }
+  
+  // Função para formatar data corretamente do UTC para timezone local
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return '-';
+    // Garantir que a string está em formato ISO com timezone
+    // Se não tiver 'Z' no final, adicionar para indicar UTC
+    let isoString = dateString;
+    if (!isoString.endsWith('Z') && !isoString.includes('+') && !isoString.includes('-', 10)) {
+      isoString = isoString + 'Z';
+    }
+    // Cria um objeto Date a partir da string ISO (que está em UTC)
+    // e formata no timezone local
+    const date = new Date(isoString);
+    return format(date, 'P \'às\' p', {locale:ptBR});
+  };
+  
+  // Determinar quais campos mostrar baseado na página e processo
+  const getFieldsToShow = (process: IProcess) => {
+    if (page === 'archived') {
+      return {
+        labels: ['Arquivado em:', 'Manifestado em:', 'Recebido em:', 'SIMP:', 'PJE:'],
+        values: [
+          formatDate(process.archived_at),
+          formatDate(process.manifested_at),
+          formatDate(process.received_at),
+          formatarSIMP(process.simpnumber),
+          formatarPJE(process.pjenumber)
+        ]
+      };
+    } else if (page === 'manifested') {
+      return {
+        labels: ['Manifestado em:', 'Recebido em:', 'SIMP:', 'PJE:'],
+        values: [
+          formatDate(process.manifested_at),
+          formatDate(process.received_at),
+          formatarSIMP(process.simpnumber),
+          formatarPJE(process.pjenumber)
+        ]
+      };
+    } else {
+      return {
+        labels: ['Recebido em:', 'SIMP:', 'PJE:'],
+        values: [
+          formatDate(process.received_at),
+          formatarSIMP(process.simpnumber),
+          formatarPJE(process.pjenumber)
+        ]
+      };
+    }
+  };
+  
   return(
     <>
       {
         filteredProcesses && filteredProcesses.map((process:IProcess) => {
+          const fields = getFieldsToShow(process);
           return(
             <div key={process.id} className="p-1 px-2 bg-slate-300 rounded text-xs flex justify-between items-center gap-2"> 
               <div className='flex flex-col w-fit text-end text-slate-900 gap-1'>
-                <p>Recebido em:</p>
-                <p>SIMP:</p>
-                <p>PJE:</p>
+                {fields.labels.map((label, index) => (
+                  <p key={index}>{label}</p>
+                ))}
               </div>
               <div className='flex flex-col flex-1 text-start text-xs gap-1 text-slate-700'>
-                <p className="">{format(new Date(process.received_at), 'P \'às\' p', {locale:ptBR})}</p>
-                <p  > {formatarSIMP(process.simpnumber)}</p>
-               
-                <p className="cursor-pointer" onClick={()=>clipBoard(process.pjenumber)}> {formatarPJE(process.pjenumber)}</p>
+                {fields.values.map((value, index) => (
+                  index === fields.values.length - 1 ? (
+                    <p key={index} className="cursor-pointer" onClick={()=>clipBoard(process.pjenumber)}>{value}</p>
+                  ) : (
+                    <p key={index}>{value}</p>
+                  )
+                ))}
               </div>
 
             
