@@ -25,11 +25,11 @@ interface rawDateProps {
   onUpdate: () => void
   inputValue?: string
 }
-export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
+export const FormCreate = ({ onUpdate, process, inputValue }: rawDateProps) => {
 
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const router = useRouter();
-  
+
   // Formatar data/hora atual para o formato datetime-local usando Date nativo
   // para garantir que use o timezone local correto
   const getCurrentDateTimeLocal = () => {
@@ -41,7 +41,7 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
-  
+
   // Usar useState para garantir que seja calculado no cliente
   const [currentDateTime, setCurrentDateTime] = React.useState<string>(() => getCurrentDateTimeLocal());
 
@@ -72,8 +72,8 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
     });
   }, [currentDateTime, inputValue, reset]);
 
-  
-  const handleAction:SubmitHandler<FieldValues> = async (data) => {
+
+  const handleAction: SubmitHandler<FieldValues> = async (data) => {
     await createAction(data);
     reset();
     onUpdate();
@@ -110,18 +110,18 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
       </div> */}
       <div className="flex flex-col gap-1">
         <label htmlFor="receivedAt">Recebido em:</label>
-        <input 
-          required 
-          className="p-2 rounded text-black" 
-          type="datetime-local" 
+        <input
+          required
+          className="p-2 rounded text-black"
+          type="datetime-local"
           defaultValue={getCurrentDateTimeLocal()}
-          {...register('receivedAt')} 
+          {...register('receivedAt')}
         />
       </div>
 
       <div className="flex flex-col gap-1  ">
         <label htmlFor="simpNumber">SIMP:</label>
-        <input required placeholder="simp" className="p-2 rounded text-black" type="text" {...register('simpNumber')}  />
+        <input required placeholder="simp" className="p-2 rounded text-black" type="text" {...register('simpNumber')} />
       </div>
 
       <div className="flex flex-col gap-1 ">
@@ -131,14 +131,14 @@ export const FormCreate = ({onUpdate, process, inputValue}:rawDateProps) => {
 
       <div className="flex justify-between items-center gap-2">
         <ButtonCreate title='Cadastrar' />
-        <button 
+        <button
           className='border border-black p-2 rounded'
           onClick={onUpdate}
         >
           Cancelar
         </button>
 
-      </div>    
+      </div>
     </form>
   );
 };

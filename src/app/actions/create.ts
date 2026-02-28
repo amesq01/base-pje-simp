@@ -14,13 +14,14 @@ export const createAction: SubmitHandler<FieldValues> = async (formData) => {
 
   const simpnumber = formData.simpNumber;
   const pjenumber = formData.pjeNumber;
-  // O input datetime-local retorna "YYYY-MM-DDTHH:mm" sem timezone (hora local)
-  // Precisamos adicionar 3 horas para converter de UTC-3 (horário local) para UTC
-  // Criar um objeto Date local e adicionar 3 horas antes de converter para UTC
-  const localDate = new Date(formData.receivedAt);
-  // Adicionar 3 horas (3 * 60 * 60 * 1000 milissegundos) para converter de UTC-3 para UTC
-  const utcDate = new Date(localDate.getTime());
-  const received_at = dayjs(utcDate).utc().toISOString();
+  // receivedAt pode vir de dois contextos:
+  // 1) Formulário de cadastro: "YYYY-MM-DDTHH:mm" (sem timezone) = horário local Brasília → converter para UTC.
+  // 2) Protocolar/Arquivar: já vem do banco como ISO UTC (ex: "2025-02-28T17:00:00.000Z") → não reconverter.
+  const raw = formData.receivedAt;
+  const isFromForm = typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(raw) && !raw.endsWith('Z') && !/\+\d{2}:\d{2}$/.test(raw);
+  const received_at = isFromForm
+    ? dayjs.tz(raw, 'America/Sao_Paulo').utc().toISOString()
+    : (typeof raw === 'string' ? dayjs.utc(raw).toISOString() : dayjs().utc().toISOString());
   const id = formData?.id;
   const type = formData?.type || 'pending';
   
